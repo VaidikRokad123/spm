@@ -8,13 +8,17 @@
     align-items: center;
     padding: 0 2rem;
     z-index: 99;
-    border-right: none;
-    border-top: none;
-    border-left: none;
+    border-bottom: 1px solid var(--border-color);
     border-radius: 0;
+    background: rgba(6, 8, 19, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
 }
 
 .navbar-left h1 {
     font-size: 1.25rem;
-    font-weight: 600;
+    font-weight: 700;
+    font-family: 'Outfit', sans-serif;
+    color: var(--text-primary);
+    letter-spacing: -0.01em;
 }

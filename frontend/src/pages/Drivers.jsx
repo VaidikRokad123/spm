@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import { Plus, Edit2, Trash2, Phone, Mail, Award, Truck, X, Star } from 'lucide-react';
+import { Plus, Edit2, Trash2, Phone, Mail, Award, Truck, X, Star, Search, Filter } from 'lucide-react';
 import api from '../services/api';
 import Table from '../components/common/Table';
 import Button from '../components/common/Button';
@@ -27,6 +27,7 @@ const Drivers = () => {
     const [statusFilter, setStatusFilter] = useState('');
     const [search, setSearch] = useState('');
     const [debouncedSearch, setDebouncedSearch] = useState(search);
+    const [showFilters, setShowFilters] = useState(false);
 
     const [showModal, setShowModal] = useState(false);
     const [editingDriver, setEditingDriver] = useState(null);
@@ -261,32 +262,51 @@ const Drivers = () => {
 
             <div className="page-header">
                 <div className="header-search">
-                    <input
-                        type="text"
-                        placeholder="Search drivers..."
-                        value={search}
-                        onChange={(e) => setSearch(e.target.value)}
-                        className="input-field"
-                    />
+                    <div className="search-input-wrapper">
+                        <Search size={18} />
+                        <input
+                            type="text"
+                            placeholder="Search drivers..."
+                            value={search}
+                            onChange={(e) => setSearch(e.target.value)}
+                        />
+                        {search && (
+                            <button className="search-clear" onClick={() => setSearch('')}>
+                                <X size={14} />
+                            </button>
+                        )}
+                    </div>
 
-                    <select
-                        value={statusFilter}
-                        onChange={(e) => setStatusFilter(e.target.value)}
-                        className="input-field"
-                    >
-                        <option value="">All Status</option>
-                        {DRIVER_STATUSES.map(status => (
-                            <option key={status} value={status}>
-                                {status.replace('_', ' ')}
-                            </option>
-                        ))}
-                    </select>
+                    <Button variant="secondary" icon={Filter} onClick={() => setShowFilters(!showFilters)}>
+                        Filters {statusFilter && `(1)`}
+                    </Button>
                 </div>
 
                 <Button icon={Plus} onClick={openAddModal}>
                     Add Driver
                 </Button>
             </div>
+
+            {/* Filter Bar */}
+            {showFilters && (
+                <div className="filter-bar glass-effect">
+                    <div className="filter-group">
+                        <label>Status</label>
+                        <select
+                            value={statusFilter}
+                            onChange={(e) => setStatusFilter(e.target.value)}
+                        >
+                            <option value="">All Statuses</option>
+                            {DRIVER_STATUSES.map(status => (
+                                <option key={status} value={status}>
+                                    {status.replace('_', ' ')}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                    <Button variant="outline" size="sm" onClick={() => setStatusFilter('')}>Clear</Button>
+                </div>
+            )}
 
             <Table
                 headers={headers}

@@ -1,7 +1,10 @@
 .table-container {
     overflow-x: auto;
-    border-radius: var(--radius-lg);
+    border-radius: var(--radius-md);
     width: 100%;
+    border: 1px solid var(--border-color);
+    background: rgba(12, 15, 32, 0.25);
+    backdrop-filter: blur(8px);
 }
 
 .custom-table {
@@ -11,19 +14,22 @@
 }
 
 .custom-table th {
-    padding: 1rem 1.5rem;
-    font-size: 0.875rem;
+    padding: 0.85rem 1.25rem;
+    font-size: 0.8rem;
     font-weight: 600;
     color: var(--text-secondary);
-    border-bottom: 1px solid var(--glass-border);
-    background: rgba(255, 255, 255, 0.02);
+    border-bottom: 1px solid var(--border-color);
+    background: rgba(19, 23, 46, 0.4);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
 }
 
 .custom-table td {
-    padding: 1rem 1.5rem;
+    padding: 0.95rem 1.25rem;
     font-size: 0.875rem;
-    border-bottom: 1px solid var(--glass-border);
+    border-bottom: 1px solid var(--border-color);
     color: var(--text-primary);
+    transition: background-color 150ms var(--ease-spring);
 }
 
 .custom-table tr:last-child td {
@@ -31,13 +37,13 @@
 }
 
 .custom-table tr:hover td {
-    background: rgba(255, 255, 255, 0.03);
+    background: rgba(255, 255, 255, 0.025);
 }
 
 .table-loading,
 .table-empty {
     text-align: center;
-    padding: 3rem !important;
+    padding: 3.5rem !important;
     color: var(--text-secondary);
 }
 
@@ -45,33 +51,86 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     gap: 1rem;
 }
 
+/* Badge styles for tables and other components */
 .badge {
-    padding: 0.25rem 0.75rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.25rem 0.65rem;
     border-radius: var(--radius-full);
-    font-size: 0.75rem;
+    font-size: 0.725rem;
     font-weight: 600;
     text-transform: capitalize;
+    letter-spacing: 0.02em;
+    border: 1px solid transparent;
 }
 
 .badge.available {
-    background: rgba(16, 185, 129, 0.1);
+    background: rgba(16, 185, 129, 0.06);
     color: var(--success);
+    border-color: rgba(16, 185, 129, 0.2);
 }
 
 .badge.on_trip {
-    background: rgba(59, 130, 246, 0.1);
+    background: rgba(37, 99, 235, 0.06);
     color: var(--accent-primary);
+    border-color: rgba(37, 99, 235, 0.2);
 }
 
 .badge.in_shop {
-    background: rgba(245, 158, 11, 0.1);
+    background: rgba(245, 158, 11, 0.06);
     color: var(--warning);
+    border-color: rgba(245, 158, 11, 0.2);
 }
 
 .badge.retired {
-    background: rgba(239, 68, 68, 0.1);
+    background: rgba(239, 68, 68, 0.06);
     color: var(--danger);
+    border-color: rgba(239, 68, 68, 0.2);
+}
+
+.badge.on_duty {
+    background: rgba(16, 185, 129, 0.06);
+    color: var(--success);
+    border-color: rgba(16, 185, 129, 0.2);
+}
+
+.badge.off_duty {
+    background: rgba(100, 116, 139, 0.06);
+    color: var(--text-secondary);
+    border-color: rgba(100, 116, 139, 0.2);
+}
+
+.badge.suspended {
+    background: rgba(239, 68, 68, 0.06);
+    color: var(--danger);
+    border-color: rgba(239, 68, 68, 0.2);
+}
+
+.badge.completed {
+    background: rgba(16, 185, 129, 0.06);
+    color: var(--success);
+    border-color: rgba(16, 185, 129, 0.2);
+}
+
+.badge.dispatched {
+    background: rgba(37, 99, 235, 0.06);
+    color: var(--accent-primary);
+    border-color: rgba(37, 99, 235, 0.2);
+}
+
+.badge.draft {
+    background: rgba(245, 158, 11, 0.06);
+    color: var(--warning);
+    border-color: rgba(245, 158, 11, 0.2);
+}
+
+.badge.cancelled {
+    background: rgba(239, 68, 68, 0.06);
+    color: var(--danger);
+    border-color: rgba(239, 68, 68, 0.2);
 }
