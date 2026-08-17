@@ -1,0 +1,9 @@
+@echo off
+echo 🧹 Cleaning up old containers...
+docker rm -f fleetflow-backend-container 2>NUL
+
+echo 📦 Building Docker image...
+docker build -t fleetflow-backend .
+
+echo 🚀 Starting Docker container in foreground...
+docker run --rm --name fleetflow-backend-container -p 3000:3000 --env-file .env fleetflow-backend
