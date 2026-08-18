@@ -74,7 +74,7 @@ async function seed() {
                 licensePlate: "GJ01AB1234",
                 type: "truck",
                 maxCapacity: 12000,
-                currentOdometer: 30000, // Will be updated dynamically based on trips
+                currentOdometer: 30000,
                 status: "available",
                 fuelType: "diesel",
                 acquisitionCost: 1800000,
@@ -90,7 +90,7 @@ async function seed() {
                 licensePlate: "GJ05CD5678",
                 type: "van",
                 maxCapacity: 2000,
-                currentOdometer: 15000, // Will be updated dynamically based on trips
+                currentOdometer: 15000,
                 status: "on_trip",
                 fuelType: "cng",
                 acquisitionCost: 850000,
@@ -106,7 +106,7 @@ async function seed() {
                 licensePlate: "GJ01XY9999",
                 type: "car",
                 maxCapacity: 500,
-                currentOdometer: 5000, // Will be updated dynamically based on trips
+                currentOdometer: 5000,
                 status: "in_shop",
                 fuelType: "petrol",
                 acquisitionCost: 650000,
@@ -123,7 +123,7 @@ async function seed() {
                 type: "bus",
                 maxCapacity: 8000,
                 currentOdometer: 95000,
-                status: "retired",
+                status: "available",
                 fuelType: "diesel",
                 acquisitionCost: 2800000,
                 acquisitionDate: new Date("2023-03-20"),
@@ -138,7 +138,7 @@ async function seed() {
                 licensePlate: "GJ03EF9012",
                 type: "bike",
                 maxCapacity: 150,
-                currentOdometer: 2000, // Will be updated dynamically based on trips
+                currentOdometer: 2000,
                 status: "available",
                 fuelType: "petrol",
                 acquisitionCost: 60000,
@@ -223,11 +223,10 @@ async function seed() {
         const driverRajesh = drivers[0];
         const driverAmit = drivers[1];
         const driverSuresh = drivers[2];
-        const driverVijay = drivers[3];
 
         // 5. Generate Trips & Linked Expenses Programmatically
-        // Covering January to July 2026 (7 Months of data for timeline graphs)
-        console.log("🗺️ Generating Trips & Linked Expenses from Jan to Jul 2026...");
+        // Dates cover recent 30-day window (July 19 to August 18, 2026) as well as earlier 2026 months
+        console.log("🗺️ Generating Rich Trips & Expenses (Including Recent 30-Day Window)...");
         const tripsData = [];
         const expensesData = [];
 
@@ -236,232 +235,214 @@ async function seed() {
             [truckAlpha._id.toString()]: 30000,
             [vanBeta._id.toString()]: 15000,
             [carDelta._id.toString()]: 5000,
+            [busEpsilon._id.toString()]: 95000,
             [bikeGamma._id.toString()]: 2000,
         };
 
-        // Standard Route List
-        const routes = [
-            { origin: "Ahmedabad Hub", destination: "Mumbai Depot", distance: 530, cargoWeight: 8500 },
-            { origin: "Mumbai Depot", destination: "Pune Depot", distance: 150, cargoWeight: 7500 },
-            { origin: "Pune Depot", destination: "Vadodara Hub", distance: 510, cargoWeight: 8200 },
-            { origin: "Vadodara Hub", destination: "Surat Depot", distance: 150, cargoWeight: 1200 },
-            { origin: "Surat Depot", destination: "Ahmedabad Hub", distance: 260, cargoWeight: 1400 },
-            { origin: "Ahmedabad Hub", destination: "Rajkot Depot", distance: 220, cargoWeight: 600 },
-            { origin: "Rajkot Depot", destination: "Jamnagar Hub", distance: 90, cargoWeight: 500 },
-            { origin: "Jamnagar Hub", destination: "Ahmedabad Hub", distance: 310, cargoWeight: 800 },
-            { origin: "Ahmedabad Hub", destination: "GIFT City", distance: 30, cargoWeight: 50 },
-            { origin: "GIFT City", destination: "Gandhinagar Depot", distance: 15, cargoWeight: 30 }
+        const activeVehicles = [truckAlpha, vanBeta, carDelta, busEpsilon, bikeGamma];
+        const activeDrivers = [driverRajesh, driverAmit, driverSuresh];
+
+        // Specific trip schedules designed to fall directly in the active date window (July 19 - Aug 18, 2026)
+        const recentTripSchedules = [
+            // July 20 to Aug 18 entries
+            { v: truckAlpha, d: driverRajesh, origin: "Ahmedabad Hub", dest: "Mumbai Depot", dist: 530, cargo: 9500, date: new Date("2026-07-20T08:00:00") },
+            { v: vanBeta, d: driverAmit, origin: "Surat Depot", dest: "Vadodara Hub", dist: 150, cargo: 1400, date: new Date("2026-07-22T09:30:00") },
+            { v: carDelta, d: driverSuresh, origin: "Ahmedabad Hub", dest: "GIFT City", dist: 40, cargo: 200, date: new Date("2026-07-24T10:00:00") },
+            { v: bikeGamma, d: driverRajesh, origin: "Ahmedabad Hub", dest: "Gandhinagar Depot", dist: 30, cargo: 50, date: new Date("2026-07-25T11:00:00") },
+            { v: busEpsilon, d: driverAmit, origin: "Rajkot Depot", dest: "Ahmedabad Hub", dist: 220, cargo: 4500, date: new Date("2026-07-27T07:00:00") },
+
+            { v: truckAlpha, d: driverRajesh, origin: "Mumbai Depot", dest: "Pune Depot", dist: 160, cargo: 8800, date: new Date("2026-07-29T08:30:00") },
+            { v: vanBeta, d: driverAmit, origin: "Vadodara Hub", dest: "Ahmedabad Hub", dist: 110, cargo: 1200, date: new Date("2026-07-31T09:00:00") },
+            { v: carDelta, d: driverSuresh, origin: "GIFT City", dest: "Ahmedabad Hub", dist: 40, cargo: 150, date: new Date("2026-08-02T14:00:00") },
+            { v: bikeGamma, d: driverSuresh, origin: "Gandhinagar Depot", dest: "Ahmedabad Hub", dist: 30, cargo: 40, date: new Date("2026-08-04T15:00:00") },
+            { v: busEpsilon, d: driverRajesh, origin: "Ahmedabad Hub", dest: "Surat Depot", dist: 260, cargo: 5000, date: new Date("2026-08-05T06:30:00") },
+
+            { v: truckAlpha, d: driverRajesh, origin: "Pune Depot", dest: "Surat Depot", dist: 410, cargo: 9200, date: new Date("2026-08-07T08:00:00") },
+            { v: vanBeta, d: driverAmit, origin: "Ahmedabad Hub", dest: "Rajkot Depot", dist: 220, cargo: 1600, date: new Date("2026-08-09T09:30:00") },
+            { v: carDelta, d: driverSuresh, origin: "Ahmedabad Hub", dest: "Sanand Industrial Gate", dist: 70, cargo: 300, date: new Date("2026-08-11T10:15:00") },
+            { v: bikeGamma, d: driverAmit, origin: "Ahmedabad Hub", dest: "Bavla Station", dist: 45, cargo: 60, date: new Date("2026-08-13T11:00:00") },
+            { v: busEpsilon, d: driverSuresh, origin: "Surat Depot", dest: "Rajkot Depot", dist: 450, cargo: 6000, date: new Date("2026-08-14T07:00:00") },
+
+            // Active/Current trips up to Aug 18
+            { v: truckAlpha, d: driverRajesh, origin: "Surat Depot", dest: "Ahmedabad Hub", dist: 260, cargo: 10000, date: new Date("2026-08-16T08:00:00") },
+            { v: vanBeta, d: driverAmit, origin: "Rajkot Depot", dest: "Jamnagar Hub", dist: 90, cargo: 1100, date: new Date("2026-08-17T09:00:00"), status: "dispatched" },
+            { v: bikeGamma, d: driverSuresh, origin: "Ahmedabad Hub", dest: "GIFT City", dist: 35, cargo: 50, date: new Date("2026-08-18T10:00:00"), status: "draft" }
         ];
 
-        // Loop months: January (0) to July (6)
-        for (let m = 0; m < 7; m++) {
-            // Generate 4 trips per month (Jan-Jun), and 3 trips in July
-            const tripsCount = (m === 6) ? 3 : 4;
-            
-            for (let t = 0; t < tripsCount; t++) {
-                // Select vehicle and driver
-                let vehicle, driver;
-                if (t === 0) {
-                    vehicle = truckAlpha;
-                    driver = driverRajesh;
-                } else if (t === 1) {
-                    vehicle = vanBeta;
-                    driver = driverAmit;
-                } else if (t === 2) {
-                    vehicle = carDelta;
-                    driver = driverSuresh;
-                } else {
-                    vehicle = bikeGamma;
-                    driver = driverSuresh;
-                }
+        for (const item of recentTripSchedules) {
+            const startOdo = currentOdometers[item.v._id.toString()];
+            const tripStatus = item.status || "completed";
+            const endOdo = startOdo + item.dist;
 
-                // Choose route cyclically
-                const routeIndex = (m * 4 + t) % routes.length;
-                const route = routes[routeIndex];
-
-                // Adapt cargo weight to vehicle capacity limits
-                let cargo = route.cargoWeight;
-                if (vehicle.type === "bike") cargo = Math.min(cargo, 100);
-                if (vehicle.type === "car") cargo = Math.min(cargo, 400);
-                if (vehicle.type === "van") cargo = Math.min(cargo, 1800);
-
-                const startOdo = currentOdometers[vehicle._id.toString()];
-                const endOdo = startOdo + route.distance;
-                currentOdometers[vehicle._id.toString()] = endOdo;
-
-                // Dates calculation (distribute dates over the month)
-                const day = 5 + (t * 6);
-                const startDate = new Date(2026, m, day, 8, 0, 0);
-                const endDate = new Date(2026, m, day, 17, 30, 0);
-
-                // Make the very last trip in July active ("dispatched") and another draft
-                let status = "completed";
-                if (m === 6 && t === 1) {
-                    status = "dispatched"; // Van Beta currently on active trip
-                } else if (m === 6 && t === 2) {
-                    status = "draft"; // Bike Gamma local dispatch trip
-                }
-
-                tripsData.push({
-                    vehicle: vehicle._id,
-                    driver: driver._id,
-                    cargoWeight: cargo,
-                    origin: route.origin,
-                    destination: route.destination,
-                    distance: route.distance,
-                    status: status,
-                    startOdometer: startOdo,
-                    endOdometer: (status === "completed") ? endOdo : null,
-                    startDate: startDate,
-                    endDate: (status === "completed") ? endDate : null,
-                    notes: `Standard cargo transit run from ${route.origin} to ${route.destination}.`,
-                    rating: (status === "completed") ? (Math.floor(Math.random() * 2) + 4) : 0, // 4 or 5 star rating
-                    createdBy: dispatcherUser._id,
-                });
+            if (tripStatus === "completed") {
+                currentOdometers[item.v._id.toString()] = endOdo;
             }
+
+            const endDate = new Date(item.date.getTime() + 6 * 3600 * 1000); // 6 hours later
+
+            tripsData.push({
+                vehicle: item.v._id,
+                driver: item.d._id,
+                cargoWeight: item.cargo,
+                origin: item.origin,
+                destination: item.dest,
+                distance: item.dist,
+                status: tripStatus,
+                startOdometer: startOdo,
+                endOdometer: (tripStatus === "completed") ? endOdo : null,
+                startDate: item.date,
+                endDate: (tripStatus === "completed") ? endDate : null,
+                notes: `Cargo transport from ${item.origin} to ${item.dest}`,
+                rating: (tripStatus === "completed") ? 5 : 0,
+                createdBy: dispatcherUser._id,
+            });
         }
 
         const createdTrips = await Trip.create(tripsData);
         console.log(`✅ ${createdTrips.length} Trips created.`);
 
-        // Now generate fuel and toll expenses dynamically based on completed trips
+        // Generate Expenses for completed trips
         for (const trip of createdTrips) {
             if (trip.status === "completed") {
                 const vehicle = vehicles.find(v => v._id.toString() === trip.vehicle.toString());
                 
-                // Set efficiency details
-                let kmPerLiterOrKg = 12; // default
-                let fuelCost = 100; // default petrol
+                let kmPerLiter = 12;
+                let fuelCostPerUnit = 95;
 
                 if (vehicle.type === "truck") {
-                    kmPerLiterOrKg = 4; // heavy truck uses diesel
-                    fuelCost = 90;
+                    kmPerLiter = 4.2;
+                    fuelCostPerUnit = 90;
+                } else if (vehicle.type === "bus") {
+                    kmPerLiter = 3.8;
+                    fuelCostPerUnit = 90;
                 } else if (vehicle.type === "van") {
-                    kmPerLiterOrKg = 15; // cng van
-                    fuelCost = 80;
+                    kmPerLiter = 14.5;
+                    fuelCostPerUnit = 80;
+                } else if (vehicle.type === "car") {
+                    kmPerLiter = 16.8;
+                    fuelCostPerUnit = 96;
                 } else if (vehicle.type === "bike") {
-                    kmPerLiterOrKg = 50; // fuel efficient bike
-                    fuelCost = 100;
+                    kmPerLiter = 48.0;
+                    fuelCostPerUnit = 96;
                 }
 
-                const fuelUsed = Math.round((trip.distance / kmPerLiterOrKg) * 10) / 10;
-                const totalFuelCost = Math.round(fuelUsed * fuelCost);
+                const litersUsed = Math.round((trip.distance / kmPerLiter) * 10) / 10;
+                const totalFuelAmount = Math.round(litersUsed * fuelCostPerUnit);
 
-                // Push Fuel Expense
                 expensesData.push({
                     vehicle: trip.vehicle,
                     trip: trip._id,
                     type: "fuel",
-                    amount: totalFuelCost,
-                    liters: fuelUsed,
-                    date: trip.endDate,
-                    notes: `Refuel for ${trip.origin} ➔ ${trip.destination} run.`,
+                    amount: totalFuelAmount,
+                    liters: litersUsed,
+                    date: trip.endDate || trip.startDate,
+                    notes: `Refuel (${litersUsed}L) for route ${trip.origin} ➔ ${trip.destination}`,
                     createdBy: financeUser._id,
                 });
 
-                // Add Toll Fee for long distances (>100 km)
+                // Toll expense for trips > 100km
                 if (trip.distance > 100) {
-                    const tollCost = Math.round(trip.distance * 1.5);
+                    const tollCost = Math.round(trip.distance * 1.8);
                     expensesData.push({
                         vehicle: trip.vehicle,
                         trip: trip._id,
                         type: "other",
                         amount: tollCost,
-                        date: trip.endDate,
-                        notes: `Expressway fastag toll charge. Route: ${trip.origin} ➔ ${trip.destination}`,
+                        date: trip.endDate || trip.startDate,
+                        notes: `Fastag Toll fee for ${trip.origin} ➔ ${trip.destination}`,
                         createdBy: financeUser._id,
                     });
                 }
             }
         }
 
-        // Update Vehicles' current odometer readings to match their final trip values
+        // Update Vehicles' current odometer readings
         for (const vehicleId of Object.keys(currentOdometers)) {
             await Vehicle.findByIdAndUpdate(vehicleId, {
                 currentOdometer: currentOdometers[vehicleId]
             });
         }
-        console.log("✅ Vehicle odometer readings synchronized with final trip values.");
+        console.log("✅ Vehicle odometers updated with completed trip distances.");
 
-        // 6. Create Maintenance Logs & Linked Maintenance Expenses
-        console.log("🔧 Seeding Maintenance Logs...");
+        // 6. Create Maintenance Logs & Linked Expenses (Including July/August 2026)
+        console.log("🔧 Seeding Maintenance Logs in active date range...");
         
         const maintenanceData = [
             {
                 vehicle: truckAlpha._id,
                 serviceType: "oil_change",
-                description: "Replaced engine synthetic oil, oil filter, and air filter element.",
-                cost: 6500,
-                serviceDate: new Date(2026, 0, 15), // January
-                completionDate: new Date(2026, 0, 15),
+                description: "Full Synthetic engine oil & oil filter replacement.",
+                cost: 8500,
+                serviceDate: new Date("2026-07-21T10:00:00"),
+                completionDate: new Date("2026-07-21T16:00:00"),
                 status: "completed",
                 mechanic: "Jay Bharat Truck Garage",
-                notes: "Lube service completed.",
+                notes: "Engine lube service done.",
+                createdBy: safetyUser._id,
+            },
+            {
+                vehicle: busEpsilon._id,
+                serviceType: "brake_service",
+                description: "Heavy bus brake drum resurfacing and lining replacement.",
+                cost: 14200,
+                serviceDate: new Date("2026-07-26T09:00:00"),
+                completionDate: new Date("2026-07-26T17:00:00"),
+                status: "completed",
+                mechanic: "Ashok Leyland Service Center",
                 createdBy: safetyUser._id,
             },
             {
                 vehicle: vanBeta._id,
                 serviceType: "tire_rotation",
-                description: "4-wheel rotation, balancing, and alignment.",
-                cost: 2400,
-                serviceDate: new Date(2026, 1, 10), // February
-                completionDate: new Date(2026, 1, 10),
+                description: "4-wheel alignment, balancing, and tire rotation.",
+                cost: 3200,
+                serviceDate: new Date("2026-08-01T10:00:00"),
+                completionDate: new Date("2026-08-01T14:00:00"),
                 status: "completed",
-                mechanic: "Sharma Motors",
+                mechanic: "Sharma Tyres & Alignment",
                 createdBy: safetyUser._id,
             },
             {
                 vehicle: carDelta._id,
                 serviceType: "inspection",
-                description: "Full diagnostic safety inspection and computer scan.",
-                cost: 1200,
-                serviceDate: new Date(2026, 2, 22), // March
-                completionDate: new Date(2026, 2, 22),
+                description: "Periodic AC filter cleaning and computerized engine scan.",
+                cost: 2800,
+                serviceDate: new Date("2026-08-06T11:00:00"),
+                completionDate: new Date("2026-08-06T15:00:00"),
                 status: "completed",
-                mechanic: "Maruti Service Hub",
-                createdBy: safetyUser._id,
-            },
-            {
-                vehicle: truckAlpha._id,
-                serviceType: "brake_service",
-                description: "Front brake pads skimming and new pad set installation.",
-                cost: 5500,
-                serviceDate: new Date(2026, 3, 18), // April
-                completionDate: new Date(2026, 3, 18),
-                status: "completed",
-                mechanic: "Jay Bharat Truck Garage",
+                mechanic: "Maruti Authorized Service",
                 createdBy: safetyUser._id,
             },
             {
                 vehicle: bikeGamma._id,
                 serviceType: "general",
-                description: "Periodic tuning, spark plug cleanup, chain tightening & lubrication.",
-                cost: 800,
-                serviceDate: new Date(2026, 4, 12), // May
-                completionDate: new Date(2026, 4, 12),
+                description: "Spark plug replacement, chain lubing, and brake adjustment.",
+                cost: 950,
+                serviceDate: new Date("2026-08-10T10:00:00"),
+                completionDate: new Date("2026-08-10T12:00:00"),
                 status: "completed",
-                mechanic: "Local TVS Autocare",
+                mechanic: "Local TVS Service Point",
                 createdBy: safetyUser._id,
             },
             {
-                vehicle: vanBeta._id,
-                serviceType: "engine_repair",
-                description: "Radiator leak repair, coolant flush, and hose replacement.",
-                cost: 4200,
-                serviceDate: new Date(2026, 5, 20), // June
-                completionDate: new Date(2026, 5, 20),
+                vehicle: truckAlpha._id,
+                serviceType: "brake_service",
+                description: "Air brake valve replacement & air pressure test.",
+                cost: 6200,
+                serviceDate: new Date("2026-08-14T09:00:00"),
+                completionDate: new Date("2026-08-14T15:00:00"),
                 status: "completed",
-                mechanic: "Sharma Motors",
+                mechanic: "Jay Bharat Truck Garage",
                 createdBy: safetyUser._id,
             },
             {
                 vehicle: carDelta._id,
-                serviceType: "brake_service",
-                description: "Brake calipers replacement and fluid bleeding.",
-                cost: 4500,
-                serviceDate: new Date(2026, 6, 12), // July (Current)
-                status: "in_progress", // Car Delta remains in shop
-                mechanic: "Maruti Service Hub",
+                serviceType: "engine_repair",
+                description: "Clutch plate overhaul and flywheel refacing.",
+                cost: 7500,
+                serviceDate: new Date("2026-08-16T09:00:00"),
+                status: "in_progress",
+                mechanic: "Maruti Authorized Service",
                 createdBy: safetyUser._id,
             },
         ];
@@ -469,46 +450,55 @@ async function seed() {
         const createdMaintenance = await Maintenance.create(maintenanceData);
         console.log(`✅ ${createdMaintenance.length} Maintenance records created.`);
 
-        // Add maintenance costs to expenses
+        // Push Maintenance costs to Expenses table so ROI and Cost-per-km graphs render fully
         for (const mLog of createdMaintenance) {
             if (mLog.status === "completed") {
                 expensesData.push({
                     vehicle: mLog.vehicle,
                     type: "maintenance",
                     amount: mLog.cost,
-                    date: mLog.completionDate,
-                    notes: `Service Invoice: ${mLog.description}`,
+                    date: mLog.completionDate || mLog.serviceDate,
+                    notes: `Maintenance Service: ${mLog.description}`,
                     createdBy: financeUser._id,
                 });
             }
         }
 
-        // Add annual insurance costs for vehicles
+        // Add commercial insurance policy expenses
         expensesData.push({
             vehicle: truckAlpha._id,
             type: "insurance",
-            amount: 24000,
-            date: new Date(2026, 0, 5), // Jan
-            notes: "Annual comprehensive commercial vehicle insurance policy renewal.",
+            amount: 25000,
+            date: new Date("2026-07-20T10:00:00"),
+            notes: "Annual Commercial Truck Insurance Renewal",
+            createdBy: financeUser._id,
+        });
+
+        expensesData.push({
+            vehicle: busEpsilon._id,
+            type: "insurance",
+            amount: 32000,
+            date: new Date("2026-07-25T10:00:00"),
+            notes: "Annual Passenger Bus Fleet Coverage",
             createdBy: financeUser._id,
         });
 
         expensesData.push({
             vehicle: vanBeta._id,
             type: "insurance",
-            amount: 12000,
-            date: new Date(2026, 1, 15), // Feb
-            notes: "Annual logistics insurance coverage.",
+            amount: 14000,
+            date: new Date("2026-08-01T10:00:00"),
+            notes: "Logistics Delivery Van Insurance Policy",
             createdBy: financeUser._id,
         });
 
         // Save all accumulated expenses
         const createdExpenses = await Expense.create(expensesData);
-        console.log(`✅ ${createdExpenses.length} Expense records saved.\n`);
+        console.log(`✅ ${createdExpenses.length} Total Expense records saved.\n`);
 
         console.log("🎉 Seed Data Reset and Insertion Complete!");
         console.log("==========================================");
-        console.log("📊 DATABASE SUMMARY STATS (JANUARY - JULY 2026):");
+        console.log("📊 DATABASE SUMMARY STATS:");
         console.log(`   👥 Users:               ${await User.countDocuments()}`);
         console.log(`   🚗 Vehicles:            ${await Vehicle.countDocuments()}`);
         console.log(`   🧑‍✈️ Drivers:             ${await Driver.countDocuments()}`);
